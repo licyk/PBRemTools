@@ -77,7 +77,7 @@ def refinement(img, mask, fast, psp_L):
 
     # Fast - Global step only.
     # Smaller L -> Less memory usage; faster in fast mode.
-    mask = refiner.refine(img, mask, fast=fast, L=psp_L) 
+    mask = refiner.refine(img, mask, fast=fast, L=psp_L)
 
     with torch.no_grad():
         torch.cuda.empty_cache()
@@ -88,11 +88,11 @@ def refinement(img, mask, fast, psp_L):
 
 def get_foreground(img, td_abg_enabled, h_split, v_split, n_cluster, alpha, th_rate, cascadePSP_enabled, fast, psp_L, sa_enabled ,query, model_name, predicted_iou_threshold, stability_score_threshold, clip_threshold):
     df = rgb2df(img)
-    image_width = img.shape[1] 
-    image_height = img.shape[0] 
+    image_width = img.shape[1]
+    image_height = img.shape[0]
     if td_abg_enabled == True:
         if cascadePSP_enabled == True:
-            if sa_enabled == True:     
+            if sa_enabled == True:
                 mask = get_sa_mask(img, query, model_name, predicted_iou_threshold, stability_score_threshold, clip_threshold)
                 mask = cv2.resize(np.uint8(mask),(image_width,image_height))
                 print(mask.shape)
@@ -104,10 +104,10 @@ def get_foreground(img, td_abg_enabled, h_split, v_split, n_cluster, alpha, th_r
             mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB)
 
         else:
-            if sa_enabled == True:     
+            if sa_enabled == True:
                 mask = get_sa_mask(img, query, model_name, predicted_iou_threshold, stability_score_threshold, clip_threshold)
                 mask = cv2.resize(np.uint8(mask),(image_width,image_height))
-            else:    
+            else:
                 mask = get_mask(img)
                 mask = (mask * 255).astype(np.uint8)
                 mask = mask.repeat(3, axis=2)
@@ -134,9 +134,9 @@ def get_foreground(img, td_abg_enabled, h_split, v_split, n_cluster, alpha, th_r
         img_df.loc[img_df['bg_cls'] == 0, ['a']] = 0
         img_df.loc[img_df['bg_cls'] != 0, ['a']] = 255
         img = df2rgba(img_df)
-        
+
     if cascadePSP_enabled == True and td_abg_enabled == False:
-        if sa_enabled == True:     
+        if sa_enabled == True:
             mask = get_sa_mask(img, query, model_name, predicted_iou_threshold, stability_score_threshold, clip_threshold)
             mask = cv2.resize(np.uint8(mask),(image_width,image_height))
             mask = cv2.cvtColor(mask, cv2.COLOR_RGB2GRAY)
@@ -148,10 +148,10 @@ def get_foreground(img, td_abg_enabled, h_split, v_split, n_cluster, alpha, th_r
         with torch.no_grad():
             torch.cuda.empty_cache()
         img = np.dstack((img, mask))
-    
+
     if cascadePSP_enabled == False and td_abg_enabled == False:
         mask, img = rmbg_fn(img)
-        
+
     mask = img[:, :, 3]
     return mask, img
 

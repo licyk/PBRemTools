@@ -2,7 +2,7 @@ import launch
 
 packages = {
     "onnx": "onnx",
-    "onnxruntime": "onnxruntime-gpu==1.14.0",
+    "onnxruntime": "onnxruntime-gpu",
     "cv2": "opencv-python",
     "numpy": "numpy",
     "PIL": "Pillow",

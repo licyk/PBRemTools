@@ -12,7 +12,7 @@ def on_ui_tabs():
                     with gr.TabItem(label="Single") as input_tab_single:
                         single_image = gr.Image(type="pil")
                     with gr.TabItem(label="Batch") as input_tab_batch:
-                        batch_image = gr.File(label="Batch Images", file_count="multiple", interactive=True, type="file")
+                        batch_image = gr.File(label="Batch Images", file_count="multiple", interactive=True, type="filepath")
                     with gr.TabItem(label="Batch from Dir") as input_tab_dir:
                         input_dir = gr.Textbox(label="Input directory", **shared.hide_dirs)
                         output_dir = gr.Textbox(label="Output directory", **shared.hide_dirs)
@@ -22,7 +22,7 @@ def on_ui_tabs():
                     with gr.Tab("Segment Anything & CLIP"):
                         sa_enabled = gr.Checkbox(label="enabled", show_label=True)
                         model_name = gr.Dropdown(label="Model", elem_id="sam_model", choices=model_list,
-                                                 value=model_list[0] if len(model_list) > 0 else None)
+                                                    value=model_list[0] if len(model_list) > 0 else None)
                         seg_query = gr.Textbox(label = "segmentation prompt", show_label=True)
                         predicted_iou_threshold = gr.Slider(0, 1, value=0.9, step=0.01, label="predicted_iou_threshold", show_label=True)
                         stability_score_threshold = gr.Slider(0, 1, value=0.9, step=0.01, label="stability_score_threshold", show_label=True)
@@ -32,7 +32,7 @@ def on_ui_tabs():
                         td_abg_enabled = gr.Checkbox(label="enabled", show_label=True)
                         h_split = gr.Slider(1, 2048, value=256, step=4, label="horizontal split num", show_label=True)
                         v_split = gr.Slider(1, 2048, value=256, step=4, label="vertical split num", show_label=True)
-                        
+
                         n_cluster = gr.Slider(1, 1000, value=500, step=10, label="cluster num", show_label=True)
                         alpha = gr.Slider(1, 255, value=50, step=1, label="alpha threshold", show_label=True)
                         th_rate = gr.Slider(0, 1, value=0.1, step=0.01, label="mask content ratio", show_label=True)
@@ -44,18 +44,18 @@ def on_ui_tabs():
                 submit = gr.Button(value="Submit")
             with gr.Row():
                 with gr.Column():
-                    gallery = gr.Gallery(label="outputs", show_label=True, elem_id="gallery").style(grid=2, object_fit="contain")
+                    gallery = gr.Gallery(label="outputs", show_label=True, elem_id="gallery", columns=2, object_fit="contain")
 
         # 0: single 1: batch 2: batch dir
         input_tab_single.select(fn=lambda: 0, inputs=[], outputs=[input_tab_state])
         input_tab_batch.select(fn=lambda: 1, inputs=[], outputs=[input_tab_state])
         input_tab_dir.select(fn=lambda: 2, inputs=[], outputs=[input_tab_state])
         submit.click(
-            processing, 
+            processing,
             inputs=[single_image, batch_image, input_dir, output_dir, output_mask_dir, show_result, input_tab_state, td_abg_enabled, h_split, v_split, n_cluster, alpha, th_rate, cascadePSP_enabled, fast, psp_L, sa_enabled, seg_query, model_name, predicted_iou_threshold, stability_score_threshold, clip_threshold],
             outputs=gallery
         )
 
     return [(PBRemTools, "PBRemTools", "pbremtools")]
-        
+
 script_callbacks.on_ui_tabs(on_ui_tabs)

@@ -21,8 +21,13 @@ from collections import OrderedDict
 from PIL import Image
 
 model_cache = OrderedDict()
-sam_model_dir = os.path.join(
-    extensions_dir, "PBRemTools/models/")
+models_path = shared.models_path
+sams_dir = os.path.join(models_path, "sam")
+if os.path.exists(sams_dir):
+    sam_model_dir = sams_dir
+else:
+    sam_model_dir = os.path.join(
+        extensions_dir, "PBRemTools/models/")
 model_list = [f for f in os.listdir(sam_model_dir) if os.path.isfile(
     os.path.join(sam_model_dir, f)) and f.split('.')[-1] != 'txt']
 
@@ -81,15 +86,15 @@ def process_image(target_image, *rem_args):
     return image, mask
 
 class Script(scripts.Script):
-  def __init__(self) -> None:
-    super().__init__()
+    def __init__(self) -> None:
+        super().__init__()
 
-  def title(self):
-    return "PBRemTools"
+    def title(self):
+        return "PBRemTools"
 
-  def show(self, is_img2img):
-    return scripts.AlwaysVisible
+    def show(self, is_img2img):
+        return scripts.AlwaysVisible
 
-  def ui(self, is_img2img):
-    return ()
+    def ui(self, is_img2img):
+        return ()
 

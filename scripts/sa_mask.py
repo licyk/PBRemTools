@@ -168,4 +168,4 @@ def get_sa_mask(image, query, model_name, predicted_iou_threshold, stability_sco
     combined_mask = np.minimum.reduce(mask_list)
 
     return 255 - combined_mask
-    
+

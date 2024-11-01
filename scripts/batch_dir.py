@@ -9,12 +9,12 @@ def save_image_dir(image, path, basename, extension='png'):
     # Generate the filename
     filename = f"{basename}.{extension}"
     full_path = os.path.join(path, filename)
-    
+
     # Save the image
     image.save(full_path)
 
     return full_path
-    
+
 def modify_basename(basename):
     match = re.search(r'(\d+)(\.\w+)?$', basename)
     if match is not None:
